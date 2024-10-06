@@ -1,0 +1,167 @@
+package pack;
+import java.util.Scanner;
+import java.util.Date;
+class User {
+    private String userId;
+    private String userPin;
+
+    public User(String userId, String userPin) {
+        this.userId = userId;
+        this.userPin = userPin;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getUserPin() {
+        return userPin;
+    }
+}
+
+class Transaction {
+    private String type;
+    private double amount;
+    private Date timestamp;
+    public Transaction(String type, double amount) {
+        this.type = type;
+        this.amount = amount;
+        this.timestamp = new Date(); 
+    }
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+}
+
+class History {
+    private Transaction[] transactions;
+    private int count;
+
+    public History() {
+        this.transactions = new Transaction[100];
+        this.count = 0;
+    }
+
+    public void addTransaction(Transaction transaction) {
+        this.transactions[count] = transaction;
+        count++;
+    }
+
+    public void displayHistory() {
+        System.out.println("Transaction History:");
+        for (int i = 0; i < count; i++) {
+            Transaction transaction = transactions[i];
+           System.out.println("Type: " + transaction.getType() + ", Amount: " + transaction.getAmount() +
+                    ", Timestamp: " + transaction.getTimestamp());
+        	//System.out.println("hello");
+        }
+    }
+}
+
+class ATM {
+    private User user;
+    private History history;
+    static int amount=10000;
+    public ATM(User user) {
+        this.user = user;
+        this.history = new History();
+    }
+
+    public void start() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Welcome to the ATM");
+        System.out.print("Enter user id: ");
+        String userId = sc.nextLine();
+        System.out.print("Enter user pin: ");
+        String userPin = sc.nextLine();
+
+        if (userId.equals(user.getUserId()) && userPin.equals(user.getUserPin())) {
+            System.out.println("Login successful!");
+            showMenu(sc);
+        } else {
+            System.out.println("Invalid user id or pin. Exiting...");
+        }
+    }
+
+    private void showMenu(Scanner scanner) {
+        while (true) {
+            System.out.println("\nSelect an option:");
+            System.out.println("1. Transactions History");
+            System.out.println("2. Deposit");
+            System.out.println("3. Withdraw");
+            System.out.println("4. Transfer");
+            System.out.println("5. Quit");
+
+            int choice = scanner.nextInt();
+			//static int amount=10000;
+            switch (choice) {
+                case 1:
+                    history.displayHistory();
+                    break;
+				case 2:
+                    System.out.println("\n ENTER THE AMOUNT: ");
+					int deposit=scanner.nextInt();
+					amount = amount + deposit;
+					System.out.println(" YOUR BALANCE =R"+amount);
+					Transaction depositTransaction = new Transaction("Deposit", deposit);
+				    history.addTransaction(depositTransaction);
+					break;
+                case 3:
+                   System.out.println("\n ENTER THE AMOUNT: ");
+					int withdraw=scanner.nextInt();
+				   if (withdraw % 100 != 0)
+					{
+						System.out.println("\n PLEASE ENTER THE AMOUNT IN MULTIPLES OF 100");
+					}
+					else if (withdraw >amount)
+					{
+						System.out.println("\n INSUFFICENT BALANCE");
+					}
+					else
+					{
+						amount = amount - withdraw;
+						System.out.println("\n\n PLEASE COLLECT YOUR CASH");
+						System.out.println("\n YOUR CURRENT BALANCE "+ amount);
+						//System.out.println("hello");
+						 Transaction withdrawTransaction = new Transaction("Withdrawal", withdraw);
+					        history.addTransaction(withdrawTransaction);
+					}
+
+                    break;
+                
+                case 4:
+					 System.out.println("enter other user id:" );
+					 int id = scanner.nextInt();
+					 System.out.println("Enter money");
+					 int money=scanner.nextInt();
+					 
+                     if(id==123)
+						System.out.println("transfer money"+money+"to"+id);
+					 else
+						 System.out.println("do not");
+                    break;
+                case 5:
+                    System.out.println("Exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
+
+public class Oasis {
+    public static void main(String[] args) {
+        User user = new User("12345", "6789");
+        ATM atm = new ATM(user);
+        atm.start();
+    }
+}
